@@ -34,7 +34,7 @@
 /** Set Scrolling mode for new line.
  *
  * If INCLUDE_SCROLLING is defined to be zero, new line will not scroll
- * the display and code for scrolling will not be included.  This option 
+ * the display and code for scrolling will not be included.  This option
  * will save some code space and one byte of RAM.
  *
  * If INCLUDE_SCROLLING is defined to be one, the scroll feature will
@@ -69,14 +69,16 @@
  */
 class SSD1306Ascii : public Print {
  public:
-  SSD1306Ascii() : m_magFactor(1), m_font(0) {}
+	SSD1306Ascii() :
+			m_magFactor(1), m_font(0) {
+	}
   /**
    * @brief Determine the width of a character.
    *
    * @param[in] c Character code.
    * @return Width of the character in pixels.
    */
-  uint8_t charWidth(uint8_t c);  
+  uint8_t charWidth(uint8_t c);
   /**
    * @brief Clear the display and set the cursor to (0, 0).
    */
@@ -94,11 +96,19 @@ class SSD1306Ascii : public Print {
   /**
    * @brief Clear the display to the end of the current line.
    * @note The number of rows cleared will be determined by the height
-   *       of the current font. 
+   *       of the current font.
    * @note The cursor will be returned to the original position.
    */
   void clearToEOL();
   /**
+	 * @brief Clear the display to the column.
+	 * @note The number of rows cleared will be determined by the height
+	 *       of the current font.
+	 * @note The cursor will be returned to the original position.
+	 * @param[in] c column.
+	 */
+	void clearToCol(uint8_t c);
+	/**
    * @return The current column in pixels.
    */
   uint8_t col() {return m_col;}
@@ -136,7 +146,7 @@ class SSD1306Ascii : public Print {
    *
    * @param[in] dev A display initialization structure.
    */
-  void init(const DevType* dev);   
+  void init(const DevType* dev);
   /**
    * @return The character magnification factor.
    */
@@ -190,7 +200,16 @@ class SSD1306Ascii : public Print {
    * @param[in] row the row number in eight pixel rows.
    */
   void setRow(uint8_t row);
-#if INCLUDE_SCROLLING   
+	/**
+	 * @brief Set inverted on or off.
+	 *
+	 * @param[inverted] when true invert the output.
+	 */
+	void setInverted(bool inverted) {
+		m_inverted = inverted;
+	}
+
+#if INCLUDE_SCROLLING
   /**
    * @brief Enable or disable scroll mode.
    *
@@ -201,20 +220,20 @@ class SSD1306Ascii : public Print {
    *       the display.
    */
   void setScroll(bool enable);
-#endif  // INCLUDE_SCROLLING   
+#endif  // INCLUDE_SCROLLING
   /**
    * @brief Write a command byte to the display controller.
    *
    * @param[in] c The command byte.
-   * @note The byte will immediately be sent to the controller. 
+   * @note The byte will immediately be sent to the controller.
    */
   void ssd1306WriteCmd(uint8_t c) {writeDisplay(c, SSD1306_MODE_CMD);}
   /**
    * @brief Write a byte to RAM in the display controller.
    *
    * @param[in] c The data byte.
-   * @note The byte will immediately be sent to the controller.   
-   */   
+   * @note The byte will immediately be sent to the controller.
+   */
   void ssd1306WriteRam(uint8_t c);
   /**
    * @brief Write a byte to RAM in the display controller.
@@ -222,14 +241,14 @@ class SSD1306Ascii : public Print {
    * @param[in] c The data byte.
    * @note The byte may be buffered until a call to ssd1306WriteCmd
    *       or ssd1306WriteRam.
-   */    
+   */
   void ssd1306WriteRamBuf(uint8_t c);
   /**
    * @brief Display a character.
    *
    * @param[in] c The character to display.
    * @return the value one.
-   */   
+   */
   size_t write(uint8_t c);
   /**
    * @brief Display a string.
@@ -238,18 +257,19 @@ class SSD1306Ascii : public Print {
    * @return The length of the string.
    */
   size_t write(const char* s);
-  
+
  private:
   virtual void writeDisplay(uint8_t b, uint8_t mode) = 0;
   uint8_t m_col;            // Cursor column.
   uint8_t m_row;            // Cursor RAM row.
-  uint8_t m_displayWidth;   // Display width. 
+  uint8_t m_displayWidth;   // Display width.
   uint8_t m_displayHeight;  // Display height.
   uint8_t m_colOffset;      // Column offset RAM to SEG
   uint8_t m_magFactor;      // Magnification factor.
-#if INCLUDE_SCROLLING    
-  uint8_t m_scroll;          // Scroll mode 
-#endif  // INCLUDE_SCROLLING    
+	bool m_inverted;          // Invert when true.
+#if INCLUDE_SCROLLING
+  uint8_t m_scroll;          // Scroll mode
+#endif  // INCLUDE_SCROLLING
   const uint8_t* m_font;    // Current font.
 };
 #endif  // SSD1306Ascii_h

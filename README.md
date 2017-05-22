@@ -1,3 +1,17 @@
+This is a fork of the excelent SSD1306Ascii libray.
+
+Changed the directory structure.
+
+Added: clearToCol(uint8_t c) : clear screen up to column
+
+Added: setInverted(bool inverted): invert the output
+
+Changed: print a space when no space is present in the characterset
+
+Unfortunately auto format made a mess of the source  :disappointed:
+
+---
+
 SSD1306Ascii is an unbuffered character only library for small OLED
 displays like the Adafruit 1.3" and 0.96" Monochrome displays.
 
